@@ -17,15 +17,37 @@ def downloadImage(imageUrl, imageName):
         print("Can't download image!")
         print(imageUrl)
 
-if __name__ == '__main__':
+# if limit is 0 it will get everything
+def getMemesFromDB(limit):
     mongodb = MongoDB()
-    allTheMemes = mongodb.getAllMeme(limit = 15)
-    for doc in allTheMemes:
-        if doc["url"] != "":
-            author = doc["author"]
-            currentTime = datetime.now().strftime("%y-%m-%d-%H-%M-%S")
-            _, extension = os.path.splitext(doc["url"])
+    return mongodb.getAllMeme(limit = limit)
+
+def getFileExtensionFromUrl(url):
+    _, extension = os.path.splitext(url)
+    return extension
+
+def filterMemesWithoutUrl(memesCursor):
+    memes = []
+    for meme in memesCursor:
+        if meme["url"] != "":
+            extension = getFileExtensionFromUrl(meme["url"])
             if extension != "":
-                currentDir = os.path.dirname(__file__)
-                filename = os.path.join(currentDir, "images", f"{author}-{currentTime}{extension}")
-                downloadImage(doc["url"], filename)
+                memes.append(meme)
+    return memes
+
+def getFileName(author, extension):
+    currentDir = os.path.dirname(__file__)
+    currentTime = datetime.now().strftime("%y-%m-%d-%H-%M-%S")
+    return os.path.join(currentDir, "images", f"{author}-{currentTime}{extension}")
+
+def downloadMemeImage(meme):
+    url = meme["url"]
+    fileName = getFileName(meme["author"], getFileExtensionFromUrl(url))
+    downloadImage(url, fileName)
+
+
+if __name__ == '__main__':
+    memes = getMemesFromDB(0)
+    filteredMemes = filterMemesWithoutUrl(memes)
+    for meme in filteredMemes:
+        downloadMemeImage(meme)
