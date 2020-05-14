@@ -1,5 +1,6 @@
 from dbInsert import handleMeme, setSubreddit
 from getImage import getMemesFromDB, filterMemesWithoutUrl, downloadMemeImage
+from csvExport import writeMemesToCSV
 from arguments import args
 
 print(args)
@@ -27,3 +28,8 @@ elif args.download:
 
 elif args.csv:
     print("I will export the database to CSV!")
+    try:
+        limit = int(args.limit)
+    except:
+        limit = 0
+    writeMemesToCSV(limit)
