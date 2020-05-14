@@ -3,24 +3,16 @@ import random
 from secrets import Mongo
 from datetime import datetime
 
-print("Mongo")
-
 class MongoDB:
 
     def __init__(self):
         print("Connecting to MongoDB...")
         self.client = pymongo.MongoClient(Mongo.connectionString)
-        print("Available databases: ")
-        print(self.client.list_database_names())
-        print("\n\nConnecting to database: redditScrapper")
         self.database = self.client["redditScrapper"]
-        print("Available collections: ")
-        print(self.database.list_collection_names())
         self.logs = self.database["logs"]
         self.data = self.database["data"]
 
     def writeLog(self, logMessage):
-        print("Logging...")
         self.logs.insert_one(logMessage)
 
     def writeData(self, data):

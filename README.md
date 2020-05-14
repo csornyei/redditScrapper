@@ -1,8 +1,10 @@
 # Reddit Scrapper
+
 This project was made to get reddit posts and save them to MongoDB for later use.
 I used it in a University assignment about ***Memes getting popular on Reddit***
 
 ## Usage
+
 1. Install the requirements
 2. Create a secrets.py based on the secrets.pub.py
 3. To save data in MongoDB run `python main.py`
@@ -10,6 +12,9 @@ I used it in a University assignment about ***Memes getting popular on Reddit***
 
 
 ## TODO
-- Move image download logic to main.py
-- Run command based on arguments
-- Set limit, subreddit, post type and MongoDB collection with arguments
+
+- [x] Move image download logic to main.py
+- [x] Run command based on arguments
+- [x] Set subreddit, post type with arguments
+- [x] Image download parameters with arguments
+- [ ] Create CSV export logic

@@ -1,87 +1,29 @@
+from dbInsert import handleMeme, setSubreddit
+from getImage import getMemesFromDB, filterMemesWithoutUrl, downloadMemeImage
+from arguments import args
 
-from time import sleep
-from reddit import RedditClient
-from mongo import MongoDB
-from datetime import datetime
+print(args)
 
-LIMIT = 1000
+if args.insert:
+    setSubreddit(args.sub)
+    if args.hot:
+        handleMeme("hot")
+    if args.new:
+        handleMeme("new")
+    if not(args.hot) and not(args.new):
+        handleMeme("hot")
+        handleMeme("new")
 
-def getMemes(type):
-    memesArr = []
-    memes = rc.getPosts(type, LIMIT)
-    for meme in memes:
-        try:
-            m = {
-                "type": type,
-                "author": meme.author.name,
-                "title": meme.title,
-                "id": meme.id,
-                "comments": [
-                    {time: meme.num_comments}
-                ],
-                "permalink": meme.permalink,
-                "score": [
-                    {time: meme.score}
-                ],
-                "created": meme.created_utc,
-                "text": meme.selftext,
-                "url": meme.url,
-                "upvotes": meme.score,
-                "num_comments": meme.num_comments,
-                "type_history": [
-                    {time: type}
-                ]
-            }
-            memesArr.append(m)
-        except:
-           print(meme)
-    return memesArr
+elif args.download:
+    print("I will download all the images!")
+    try:
+        limit = int(args.limit)
+    except:
+        limit = 0
+    memeCursor = getMemesFromDB(limit)
+    filteredMemes = filterMemesWithoutUrl(memeCursor)
+    for meme in filteredMemes:
+        downloadMemeImage(meme)
 
-def insertMemeToDB(localMeme, type):
-    filt = {
-        "author": localMeme["author"],
-        "title": localMeme["title"],
-        "created": localMeme["created"],
-        "id": localMeme["id"]
-    }
-    if mongodb.findMeme(filt) is None:
-        mongodb.writeData(localMeme)
-        print("Inserted")
-    else:
-        update = {
-            "$push": {
-                "score": {time: localMeme["upvotes"]},
-                "comments": {time: localMeme["num_comments"]},
-                "type_history": {time: type}
-            },
-            "$set": {
-                "upvotes": localMeme["upvotes"],
-                "num_comments": localMeme["num_comments"]
-            }
-        }
-        mongodb.findMemeAndUpdate(filt, update)
-        print("Updated")
-
-time = datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
-rc = RedditClient()
-mongodb = MongoDB()
-rc.getSubreddit("memes")
-hotMemes = getMemes("hot")
-newMemes = getMemes("new")
-index = 0
-print("HOT")
-for meme in hotMemes:
-    insertMemeToDB(meme, "hot")
-    index = index + 1
-    if index % 50 == 0:
-        print(f"{index} of {len(hotMemes)}")
-    sleep(0.5)
-
-index = 0
-print("HOT")
-for meme in newMemes:
-    insertMemeToDB(meme, "new")
-    index = index + 1
-    if index % 50 == 0:
-        print(f"{index} of {len(newMemes)}")
-    sleep(0.5)
+elif args.csv:
+    print("I will export the database to CSV!")
