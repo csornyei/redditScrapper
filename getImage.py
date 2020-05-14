@@ -1,6 +1,7 @@
 import os
 import requests
 import shutil
+from csv import DictWriter
 from mongo import getMemesFromDB
 from datetime import datetime
 
@@ -13,9 +14,11 @@ def downloadImage(imageUrl, imageName):
         with open(imageName, 'wb') as file:
             shutil.copyfileobj(r.raw, file)
         print("Image downloaded!")
+        return True
     else:
         print("Can't download image!")
         print(imageUrl)
+        return False
 
 def getFileExtensionFromUrl(url):
     _, extension = os.path.splitext(url)
@@ -38,11 +41,25 @@ def getFileName(author, extension):
 def downloadMemeImage(meme):
     url = meme["url"]
     fileName = getFileName(meme["author"], getFileExtensionFromUrl(url))
-    downloadImage(url, fileName)
+    if downloadImage(url, fileName):
+        return fileName
+    else:
+        return "No image downloaded"
 
 
 if __name__ == '__main__':
-    memes = getMemesFromDB(0)
+    memes = getMemesFromDB(15)
     filteredMemes = filterMemesWithoutUrl(memes)
-    for meme in filteredMemes:
-        downloadMemeImage(meme)
+    with open(os.path.join(os.path.dirname(__file__), "csv", f"images-{datetime.now().strftime('%y-%m-%d-%H-%M-%S')}.csv"), "w") as file:
+        fieldnames = ["id", "title", "author", "filename"]
+        writer = DictWriter(file, fieldnames)
+        writer.writeheader()
+        for meme in filteredMemes:
+            filename = downloadMemeImage(meme)
+            row = {
+                "id": meme["id"],
+                "title": meme["title"],
+                "author": meme["author"],
+                "filename": filename
+            }
+            writer.writerow(row)
