@@ -1,7 +1,7 @@
 import os
 import requests
 import shutil
-from mongo import MongoDB
+from mongo import getMemesFromDB
 from datetime import datetime
 
 def downloadImage(imageUrl, imageName):
@@ -16,11 +16,6 @@ def downloadImage(imageUrl, imageName):
     else:
         print("Can't download image!")
         print(imageUrl)
-
-# if limit is 0 it will get everything
-def getMemesFromDB(limit):
-    mongodb = MongoDB()
-    return mongodb.getAllMeme(limit = limit)
 
 def getFileExtensionFromUrl(url):
     _, extension = os.path.splitext(url)

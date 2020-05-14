@@ -1,5 +1,4 @@
 import pymongo
-import random
 from secrets import Mongo
 from datetime import datetime
 
@@ -48,6 +47,11 @@ class MongoDB:
 
     def findMemeAndUpdate(self, query, newThing):
         return self.data.find_one_and_update(query, newThing)
+
+# if limit is 0 it will get everything
+def getMemesFromDB(limit):
+    mongodb = MongoDB()
+    return mongodb.getAllMeme(limit = limit)
 
 
 if __name__ == '__main__':
