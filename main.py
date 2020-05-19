@@ -1,22 +1,38 @@
 from os import path
-from datetime import datetime
+from time import sleep
 from csv import DictWriter
+from arguments import args
+from datetime import datetime
+from csvExport import writeMemesToCSV
 from dbInsert import handleMeme, setSubreddit
 from getImage import getMemesFromDB, filterMemesWithoutUrl, downloadMemeImage
-from csvExport import writeMemesToCSV
-from arguments import args
 
 print(args)
 
+TWO_HOURS = 2 * 60 * 60
+
 if args.insert:
-    setSubreddit(args.sub)
-    if args.hot:
-        handleMeme("hot")
-    if args.new:
-        handleMeme("new")
-    if not(args.hot) and not(args.new):
-        handleMeme("hot")
-        handleMeme("new")
+
+    if args.loop:
+        while True:
+            setSubreddit(args.sub)
+            if args.hot:
+                handleMeme("hot")
+            if args.new:
+                handleMeme("new")
+            if not(args.hot) and not(args.new):
+                handleMeme("hot")
+                handleMeme("new")
+            sleep(TWO_HOURS)
+    else:
+        setSubreddit(args.sub)
+        if args.hot:
+            handleMeme("hot")
+        if args.new:
+            handleMeme("new")
+        if not(args.hot) and not(args.new):
+            handleMeme("hot")
+            handleMeme("new")
 
 elif args.download:
     print("I will download all the images!")
