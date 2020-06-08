@@ -22,4 +22,5 @@ I used it in a University assignment about ***Memes getting popular on Reddit***
 - [x] ~~Set subreddit, post type with arguments~~
 - [x] ~~Image download parameters with arguments~~
 - [x] ~~Create CSV export logic~~
-- [x] ~~Looping for insert~~
+- [ ] Getting user data
+- [ ] Multi threaded image download

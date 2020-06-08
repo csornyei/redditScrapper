@@ -10,7 +10,6 @@ time = datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
 LIMIT = 1000
 
 def setSubreddit(subredditName):
-    print(f"Setting subreddit to {subredditName}")
     rc.getSubreddit(subredditName)
 
 def getMemes(type):
@@ -53,7 +52,6 @@ def insertMemeToDB(localMeme, type):
     }
     if mongodb.findMeme(filt) is None:
         mongodb.writeData(localMeme)
-        print("Inserted")
     else:
         update = {
             "$push": {
@@ -67,10 +65,8 @@ def insertMemeToDB(localMeme, type):
             }
         }
         mongodb.findMemeAndUpdate(filt, update)
-        print("Updated")
 
 def handleMeme(type):
-    print(f"Starting {type}\n")
     memes = getMemes(type)
     index = 0
     for meme in memes:
@@ -78,4 +74,3 @@ def handleMeme(type):
         insertMemeToDB(meme, type)
         print(f"{index} of {len(memes)}", end="\r", flush=True)
         sleep(0.5)
-    print(f"{type} is done!")

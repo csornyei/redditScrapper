@@ -51,5 +51,4 @@ if __name__ == '__main__':
             "url": meme.url
         }
         memesArr.append(m)
-        print(meme.title)
     print(memesArr)

@@ -7,32 +7,15 @@ from csvExport import writeMemesToCSV
 from dbInsert import handleMeme, setSubreddit
 from getImage import getMemesFromDB, filterMemesWithoutUrl, downloadMemeImage
 
-print(args)
-
-TWO_HOURS = 2 * 60 * 60
-
 if args.insert:
-
-    if args.loop:
-        while True:
-            setSubreddit(args.sub)
-            if args.hot:
-                handleMeme("hot")
-            if args.new:
-                handleMeme("new")
-            if not(args.hot) and not(args.new):
-                handleMeme("hot")
-                handleMeme("new")
-            sleep(TWO_HOURS)
-    else:
-        setSubreddit(args.sub)
-        if args.hot:
-            handleMeme("hot")
-        if args.new:
-            handleMeme("new")
-        if not(args.hot) and not(args.new):
-            handleMeme("hot")
-            handleMeme("new")
+    setSubreddit(args.sub)
+    if args.hot:
+        handleMeme("hot")
+    if args.new:
+        handleMeme("new")
+    if not(args.hot) and not(args.new):
+        handleMeme("hot")
+        handleMeme("new")
 
 elif args.download:
     print("I will download all the images!")
@@ -55,6 +38,7 @@ elif args.download:
                 "filename": filename
             }
             writer.writerow(row)
+            memeCounter += 1
 
 elif args.csv:
     print("I will export the database to CSV!")

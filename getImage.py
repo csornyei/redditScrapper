@@ -13,11 +13,8 @@ def downloadImage(imageUrl, imageName):
 
         with open(imageName, 'wb') as file:
             shutil.copyfileobj(r.raw, file)
-        print("Image downloaded!")
         return True
     else:
-        print("Can't download image!")
-        print(imageUrl)
         return False
 
 def getFileExtensionFromUrl(url):
