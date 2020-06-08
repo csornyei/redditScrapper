@@ -4,7 +4,7 @@ from csv import DictWriter
 from arguments import args
 from datetime import datetime
 from csvExport import writeMemesToCSV
-from dbInsert import handleMeme, setSubreddit
+from dbInsert import handleMeme, setSubreddit, insertUser
 from getImage import getMemesFromDB, filterMemesWithoutUrl, downloadMemeImage
 
 if args.insert:
@@ -47,3 +47,13 @@ elif args.csv:
     except:
         limit = 0
     writeMemesToCSV(limit)
+
+elif args.user:
+    if args.name != 0:
+        insertUser(args.name)
+    elif args.file != 0:
+        with open(args.file) as file:
+            for line in file:
+                insertUser(line.strip())
+    else:
+        print("You didn't provided name or file!")

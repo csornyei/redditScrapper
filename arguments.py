@@ -12,5 +12,8 @@ parser.add_argument('-l', '--limit', action="store", default=0, help="How many p
 
 parser.add_argument('-c', '--csv', action="store_true", help="CSV Export: export the stored posts to CSV")
 
+parser.add_argument('-u', '--user', action="store_true", help="User: get some info about the user (name or file with names must be provided)")
+parser.add_argument('--name', action="store", default=0, help="Name of the user to check")
+parser.add_argument('--file', action="store", default=0, help="File with usernames")
 
 args = parser.parse_args()

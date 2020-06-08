@@ -10,6 +10,7 @@ class MongoDB:
         self.database = self.client["redditScrapper"]
         self.logs = self.database["logs"]
         self.data = self.database["data"]
+        self.users = self.database["users"]
 
     def writeLog(self, logMessage):
         self.logs.insert_one(logMessage)
@@ -32,6 +33,28 @@ class MongoDB:
             self.writeLog({
                 "status": "fail",
                 "message": "Data not inserted",
+                "exception": e,
+                "timestamp": timestamp
+            })
+
+    def writeUser(self, userData):
+        timestamp = datetime.now()
+        try:
+            item = {
+                **userData,
+                "timestamp": timestamp
+            }
+            self.users.insert_one(item)
+            self.writeLog({
+                "status": "success",
+                "message": "User inserted",
+                "timestamp": timestamp
+            })
+        except Exception as e:
+            print(e)
+            self.writeLog({
+                "status": "fail",
+                "message": "User not inserted",
                 "exception": e,
                 "timestamp": timestamp
             })

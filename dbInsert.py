@@ -74,3 +74,7 @@ def handleMeme(type):
         insertMemeToDB(meme, type)
         print(f"{index} of {len(memes)}", end="\r", flush=True)
         sleep(0.5)
+
+def insertUser(name):
+    userData = rc.getRedditorData(name)
+    mongodb.writeUser(userData)
