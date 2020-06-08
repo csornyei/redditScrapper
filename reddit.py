@@ -33,6 +33,34 @@ class RedditClient:
         else:
             raise Exception
 
+    def getRedditorData(self, name):
+        redditor = self.reddit.redditor(name)
+
+        if not redditor.is_suspended:
+            count = 0
+            scoreSum = 0
+            commentSum = 0
+
+            for submission in redditor.submissions.new(limit = 1000):
+                commentSum += submission.num_comments
+                scoreSum += submission.score
+                count += 1
+
+            mean_score = scoreSum / count
+            mean_comments = commentSum / count
+
+            return {
+                "name": redditor.name,
+                "id": redditor.id,
+                "posts_count": count,
+                "posts_mean_score": '{:.2f}'.format(mean_score),
+                "posts_mean_num_comments": '{:.2f}'.format(mean_comments)
+            }
+        return {
+            "name": redditor.name,
+            "suspended": redditor.is_suspended
+        }
+
 if __name__ == '__main__':
     redditClient = RedditClient()
     redditClient.getSubreddit("memes")
@@ -52,3 +80,4 @@ if __name__ == '__main__':
         }
         memesArr.append(m)
     print(memesArr)
+    print(redditClient.getRedditorData("spez"))
