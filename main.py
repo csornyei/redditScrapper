@@ -3,7 +3,7 @@ from time import sleep
 from csv import DictWriter
 from arguments import args
 from datetime import datetime
-from csvExport import writeMemesToCSV
+from csvExport import writeMemesToCSV, writeUsersToCSV
 from dbInsert import handleMeme, setSubreddit, insertUser
 from getImage import getMemesFromDB, filterMemesWithoutUrl, downloadMemeImage
 
@@ -41,19 +41,27 @@ elif args.download:
             memeCounter += 1
 
 elif args.csv:
-    print("I will export the database to CSV!")
-    try:
-        limit = int(args.limit)
-    except:
-        limit = 0
-    writeMemesToCSV(limit)
+    if args.user:
+        print("I will export user data to CSV!")
+        writeUsersToCSV()
+    else:
+        print("I will export post data to CSV!")
+        try:
+            limit = int(args.limit)
+        except:
+            limit = 0
+        writeMemesToCSV(limit)
 
 elif args.user:
     if args.name != 0:
         insertUser(args.name)
     elif args.file != 0:
+        count = 0
         with open(args.file) as file:
             for line in file:
                 insertUser(line.strip())
+                count += 1
+                if count % 100 == 0:
+                    print(count)
     else:
         print("You didn't provided name or file!")

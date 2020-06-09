@@ -68,6 +68,9 @@ class MongoDB:
             arg_limit = kwargs["limit"]
         return self.data.find({}, limit=arg_limit)
 
+    def getAllUsers(self):
+        return self.users.find({})
+
     def findMemeAndUpdate(self, query, newThing):
         return self.data.find_one_and_update(query, newThing)
 
@@ -76,6 +79,9 @@ def getMemesFromDB(limit):
     mongodb = MongoDB()
     return mongodb.getAllMeme(limit = limit)
 
+def getUsersFromDB():
+    mongodb = MongoDB()
+    return mongodb.getAllUsers()
 
 if __name__ == '__main__':
     mongodb = MongoDB()

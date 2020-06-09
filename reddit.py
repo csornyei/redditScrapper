@@ -36,25 +36,33 @@ class RedditClient:
     def getRedditorData(self, name):
         redditor = self.reddit.redditor(name)
 
-        count = 0
-        scoreSum = 0
-        commentSum = 0
+        try:
+            count = 0
+            scoreSum = 0
+            commentSum = 0
 
-        for submission in redditor.submissions.new(limit = 1000):
-            commentSum += submission.num_comments
-            scoreSum += submission.score
-            count += 1
+            for submission in redditor.submissions.new(limit = 1000):
+                commentSum += submission.num_comments
+                scoreSum += submission.score
+                count += 1
 
-        mean_score = scoreSum / count
-        mean_comments = commentSum / count
+            mean_score = scoreSum / count
+            mean_comments = commentSum / count
 
-        return {
-            "name": redditor.name,
-            "id": redditor.id,
-            "posts_count": count,
-            "posts_mean_score": '{:.2f}'.format(mean_score),
-            "posts_mean_num_comments": '{:.2f}'.format(mean_comments)
-        }
+            return {
+                "name": redditor.name,
+                "id": redditor.id,
+                "posts_count": count,
+                "posts_mean_score": '{:.2f}'.format(mean_score),
+                "posts_mean_num_comments": '{:.2f}'.format(mean_comments)
+            }
+        except Exception as e:
+            print(e)
+            print(name)
+            return {
+                "name": name
+            }
+
 
 if __name__ == '__main__':
     redditClient = RedditClient()
